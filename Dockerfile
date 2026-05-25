@@ -4,16 +4,14 @@ WORKDIR /app
 
 COPY . .
 
-WORKDIR /app/ai-career-assistant
-
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17
 
 WORKDIR /app
 
-COPY --from=build /app/ai-career-assistant/target/*.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+CMD ["java", "-jar", "app.jar"]
