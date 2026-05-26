@@ -4,6 +4,9 @@ import com.surya.aicareerassistant.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,21 +43,15 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public Routes
+                        // Allow OPTIONS requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Public APIs
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // Admin Routes
-                        .requestMatchers("/api/admin/**")
-                        .hasRole("ADMIN")
-
-                        // User Routes
-                        .requestMatchers("/api/profile/**")
-                        .hasAnyRole("USER", "ADMIN")
-
-                        // All Other Routes
-                        .anyRequest()
-                        .authenticated()
+                        // Everything else
+                        .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(
@@ -63,6 +60,14 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config
+    ) throws Exception {
+
+        return config.getAuthenticationManager();
     }
 
     @Bean
