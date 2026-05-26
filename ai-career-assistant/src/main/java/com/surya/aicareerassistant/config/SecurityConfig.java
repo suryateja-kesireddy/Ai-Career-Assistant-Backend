@@ -73,7 +73,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:5173",
-                        "https://ai-career-assistant-frontend-six.vercel.app/"
+                        "https://ai-career-assistant-frontend-six.vercel.app"
                 )
         );
 
